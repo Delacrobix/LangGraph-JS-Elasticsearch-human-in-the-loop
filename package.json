@@ -1,0 +1,16 @@
+{
+  "name": "2025-09-22_LangGraph-elasticsearch",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@elastic/elasticsearch": "^9.1.1",
+    "@langchain/community": "^0.3.56",
+    "@langchain/core": "^0.3.77",
+    "@langchain/langgraph": "^0.4.9",
+    "@langchain/openai": "^0.6.13",
+    "dotenv": "^17.2.2",
+    "express": "^4.19.2"
+  }
+}
