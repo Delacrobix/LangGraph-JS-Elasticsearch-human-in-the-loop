@@ -5,18 +5,31 @@ import {
   Command,
   MemorySaver,
 } from "@langchain/langgraph";
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { ElasticVectorSearch } from "@langchain/community/vectorstores/elasticsearch";
+import { Client } from "@elastic/elasticsearch";
 import { writeFileSync } from "node:fs";
 import readline from "node:readline";
-import {
-  ingestData,
-  vectorStore,
-  Document,
-  DocumentMetadata,
-} from "./dataIngestion.js";
+import { ingestData, Document, DocumentMetadata } from "./dataIngestion.ts";
 
-// Initialize LLM
+const VECTOR_INDEX = "flights-offerings";
+
 const llm = new ChatOpenAI({ model: "gpt-4o-mini" });
+const embeddings = new OpenAIEmbeddings({
+  model: "text-embedding-3-small",
+});
+
+const esClient = new Client({
+  node: process.env.ELASTICSEARCH_ENDPOINT!,
+  auth: {
+    apiKey: process.env.ELASTICSEARCH_API_KEY!,
+  },
+});
+
+const vectorStore = new ElasticVectorSearch(embeddings, {
+  client: esClient,
+  indexName: VECTOR_INDEX,
+});
 
 // Define the state schema for application workflow
 const SupportState = Annotation.Root({

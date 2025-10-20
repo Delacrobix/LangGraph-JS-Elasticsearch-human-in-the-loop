@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const VECTOR_INDEX = "test-index";
+const VECTOR_INDEX = "flights-offerings";
 
 // Types
 export interface DocumentMetadata {
@@ -33,21 +33,18 @@ interface RawDocument {
   metadata?: DocumentMetadata;
 }
 
-// Initialize Elasticsearch client
-export const esClient = new Client({
+const esClient = new Client({
   node: process.env.ELASTICSEARCH_ENDPOINT!,
   auth: {
     apiKey: process.env.ELASTICSEARCH_API_KEY!,
   },
 });
 
-// Initialize embeddings
-export const embeddings = new OpenAIEmbeddings({
+const embeddings = new OpenAIEmbeddings({
   model: "text-embedding-3-small",
 });
 
-// Initialize vector store
-export const vectorStore = new ElasticVectorSearch(embeddings, {
+const vectorStore = new ElasticVectorSearch(embeddings, {
   client: esClient,
   indexName: VECTOR_INDEX,
 });
@@ -77,7 +74,6 @@ export async function ingestData(): Promise<void> {
   if (!vectorExists) {
     console.log("CREATING VECTOR INDEX...");
 
-    // Vector index mapping
     await esClient.indices.create({
       index: VECTOR_INDEX,
       mappings: {
@@ -89,7 +85,31 @@ export async function ingestData(): Promise<void> {
             index: true,
             similarity: "cosine",
           },
-          metadata: { type: "object", enabled: true },
+          metadata: {
+            type: "object",
+            properties: {
+              from_city: { type: "keyword" },
+              to_city: { type: "keyword" },
+              airport_code: { type: "keyword" },
+              airport_name: {
+                type: "text",
+                fields: {
+                  keyword: { type: "keyword" },
+                },
+              },
+              country: { type: "keyword" },
+              airline: { type: "keyword" },
+              date: { type: "date" },
+              price: { type: "integer" },
+              time_approx: { type: "keyword" },
+              title: {
+                type: "text",
+                fields: {
+                  keyword: { type: "keyword" },
+                },
+              },
+            },
+          },
         },
       },
     });
