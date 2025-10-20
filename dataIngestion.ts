@@ -10,16 +10,16 @@ const VECTOR_INDEX = "test-index";
 
 // Types
 export interface DocumentMetadata {
-  title?: string;
-  airline?: string;
-  from_city?: string;
-  to_city?: string;
-  airport_code?: string;
-  airport_name?: string;
-  price?: number;
-  time_approx?: string;
-  date?: string;
-  [key: string]: any;
+  from_city: string;
+  to_city: string;
+  airport_code: string;
+  airport_name: string;
+  country: string;
+  airline: string;
+  date: string;
+  price: number;
+  time_approx: string;
+  title: string;
 }
 
 export interface Document {
@@ -63,7 +63,7 @@ export async function loadDataset(path: string): Promise<Document[]> {
 
   return data.map((d) => ({
     pageContent: String(d.pageContent ?? d.text ?? ""),
-    metadata: d.metadata ?? {},
+    metadata: (d.metadata ?? {}) as DocumentMetadata,
   }));
 }
 

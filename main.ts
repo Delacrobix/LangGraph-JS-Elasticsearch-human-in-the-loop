@@ -19,15 +19,6 @@ import {
 const llm = new ChatOpenAI({ model: "gpt-4o-mini" });
 
 // Define the state schema for application workflow
-interface SupportStateType {
-  input: string;
-  candidates?: Document[];
-  userChoice?: string;
-  selected?: Document;
-  final?: string;
-  __interrupt__?: any[];
-}
-
 const SupportState = Annotation.Root({
   input: Annotation<string>(),
   candidates: Annotation<Document[]>(),
@@ -37,9 +28,7 @@ const SupportState = Annotation.Root({
 });
 
 // Node 1: Retrieve data from Elasticsearch
-async function retrieveFlights(
-  state: SupportStateType
-): Promise<Partial<SupportStateType>> {
+async function retrieveFlights(state: typeof SupportState.State) {
   const results = await vectorStore.similaritySearch(state.input, 5);
   const candidates: Document[] = [];
 
@@ -53,7 +42,7 @@ async function retrieveFlights(
 }
 
 // Node 2: Evaluate if there are 1 or multiple responses
-function evaluateResults(state: SupportStateType): Partial<SupportStateType> {
+function evaluateResults(state: typeof SupportState.State) {
   const candidates = state.candidates || [];
 
   // If there is 1 result, auto-select it
@@ -69,26 +58,8 @@ function evaluateResults(state: SupportStateType): Partial<SupportStateType> {
   return { candidates };
 }
 
-// Node 3: Show results only
-function showResults(state: SupportStateType): SupportStateType {
-  const candidates = state.candidates || [];
-  const formattedOptions = candidates
-    .map((d, index) => {
-      const m = d.metadata || {};
-
-      return `${index + 1}. ${m.title} - ${m.to_city} - ${m.airport_name}(${
-        m.airport_code
-      }) airport - ${m.airline} - $${m.price} - ${m.time_approx}`;
-    })
-    .join("\n");
-
-  console.log(`\n📋 Flights found:\n${formattedOptions}\n`);
-
-  return state;
-}
-
-// Node 4: Request user choice (separate from showing)
-function requestUserChoice(): Partial<SupportStateType> {
+// Node 3: Request user choice (separate from showing)
+function requestUserChoice() {
   const userChoice = interrupt({
     question: `Which flight do you prefer?:`,
   });
@@ -96,10 +67,8 @@ function requestUserChoice(): Partial<SupportStateType> {
   return { userChoice };
 }
 
-// Node 5: Disambiguate user choice and provide final answer
-async function disambiguateAndAnswer(
-  state: SupportStateType
-): Promise<Partial<SupportStateType>> {
+// Node 4: Disambiguate user choice and provide final answer
+async function disambiguateAndAnswer(state: typeof SupportState.State) {
   const candidates = state.candidates || [];
   const userInput = state.userChoice || "";
 
@@ -144,6 +113,24 @@ async function disambiguateAndAnswer(
   };
 }
 
+// Node 5: Show results only
+function showResults(state: typeof SupportState.State) {
+  const candidates = state.candidates || [];
+  const formattedOptions = candidates
+    .map((d: Document, index: number) => {
+      const m = d.metadata || {};
+
+      return `${index + 1}. ${m.title} - ${m.to_city} - ${m.airport_name}(${
+        m.airport_code
+      }) airport - ${m.airline} - $${m.price} - ${m.time_approx}`;
+    })
+    .join("\n");
+
+  console.log(`\n📋 Flights found:\n${formattedOptions}\n`);
+
+  return state;
+}
+
 // Helper function to format flight details
 function formatFlightDetails(metadata: DocumentMetadata): string {
   return `Selected flight: ${metadata.title} - ${metadata.airline}
@@ -168,7 +155,7 @@ const workflow = new StateGraph(SupportState)
   .addEdge("retrieveFlights", "evaluateResults")
   .addConditionalEdges(
     "evaluateResults",
-    (state: SupportStateType) => {
+    (state: typeof SupportState.State) => {
       if (state.final) return "complete"; // 0 or 1 result
       return "multiple"; // multiple results
     },
@@ -221,7 +208,7 @@ async function saveGraphImage(app: any): Promise<void> {
 /**
  * Main execution function
  */
-async function main(): Promise<void> {
+async function main() {
   // Ingest data
   await ingestData();
 
@@ -236,16 +223,16 @@ async function main(): Promise<void> {
   const question = "Flights to Tokyo"; // User query
   console.log(`🔍 SEARCHING USER QUESTION: "${question}"\n`);
 
-  let currentState = await app.invoke({ input: question }, config as any);
+  let currentState = await app.invoke({ input: question }, config);
 
   // Handle interruption
-  if (currentState.__interrupt__ && currentState.__interrupt__.length > 0) {
+  if ((currentState as any).__interrupt__?.length > 0) {
     console.log("\n💭 APPLICATION PAUSED WAITING FOR USER INPUT...");
     const userChoice = await getUserInput("👤 CHOICE ONE OPTION: ");
 
     currentState = await app.invoke(
       new Command({ resume: userChoice }),
-      config as any
+      config
     );
   }
 
