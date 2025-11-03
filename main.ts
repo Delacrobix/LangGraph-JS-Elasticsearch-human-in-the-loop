@@ -42,13 +42,8 @@ const SupportState = Annotation.Root({
 
 // Node 1: Retrieve data from Elasticsearch
 async function retrieveFlights(state: typeof SupportState.State) {
-  const results = await vectorStore.similaritySearch(state.input, 5);
-  const candidates: Document[] = [];
-
-  for (const d of results) {
-    candidates.push(d as Document);
-    if (candidates.length >= 2) break;
-  }
+  const results = await vectorStore.similaritySearch(state.input, 2);
+  const candidates = results.map((d) => d as Document);
 
   console.log(`📋 Found ${candidates.length} different flights`);
   return { candidates };
@@ -92,11 +87,7 @@ async function disambiguateAndAnswer(state: typeof SupportState.State) {
     ${candidates
       .map(
         (d, i) =>
-          `${i + 1}. ${d.metadata?.title} - ${d.metadata?.to_city} (${
-            d.metadata?.airport_code
-          }) - ${d.metadata?.airline} - $${d.metadata?.price} - ${
-            d.metadata?.time_approx
-          }`
+          `${i}. ${d.metadata?.title} - ${d.metadata?.to_city} (${d.metadata?.airport_code}) - ${d.metadata?.airline} - $${d.metadata?.price} - ${d.metadata?.time_approx}`
       )
       .join("\n")}
 
@@ -112,17 +103,12 @@ async function disambiguateAndAnswer(state: typeof SupportState.State) {
     { role: "user", content: prompt },
   ]);
 
-  const selectedNumber = Number.parseInt(llmResponse.content as string, 10) - 1;
-  const selectedFlight =
-    selectedNumber >= 0 && selectedNumber < candidates.length
-      ? candidates[selectedNumber]
-      : candidates[0];
-
-  const metadata = selectedFlight.metadata || {};
+  const selectedNumber = Number.parseInt(llmResponse.content as string, 10); // Convert to zero-based index
+  const selectedFlight = candidates[selectedNumber] ?? candidates[0]; // Fallback to first option
 
   return {
     selected: selectedFlight,
-    final: formatFlightDetails(metadata),
+    final: formatFlightDetails(selectedFlight.metadata),
   };
 }
 
