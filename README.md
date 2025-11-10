@@ -46,17 +46,6 @@ npm start
 - 👤 Human-in-the-loop workflow with LangGraph
 - 📊 Workflow visualization (generates `workflow_graph.png`)
 
-## Project Structure
-
-```
-app/
-├── main.ts              # Main application entry point
-├── dataIngestion.ts     # Elasticsearch data ingestion logic
-├── dataset.json         # Flight data
-├── .env                 # Environment variables (create this)
-└── package.json         # Dependencies
-```
-
 ## Workflow
 
 1. **Retrieve Flights** - Search Elasticsearch with vector similarity
