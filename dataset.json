@@ -30,7 +30,7 @@
     }
   },
   {
-    "pageContent": "Ticket: Medellín (MDE) → Tokyo (HND). 2 stops. Airline: CondorJet.",
+    "pageContent": "Ticket: Medellín (MDE) → Tokyo, Japan (HND). 2 stops. Airline: CondorJet. Flight to Japan Asia.",
     "metadata": {
       "from_city": "Medellín",
       "to_city": "Tokyo",
@@ -45,7 +45,7 @@
     }
   },
   {
-    "pageContent": "Ticket: Medellín (MDE) → Tokyo (NRT). 1–2 stops. Airline: CaribeWings.",
+    "pageContent": "Ticket: Medellín (MDE) → Tokyo, Japan (NRT). 1–2 stops. Airline: CaribeWings. Flight to Japan Asia.",
     "metadata": {
       "from_city": "Medellín",
       "to_city": "Tokyo",
@@ -147,6 +147,186 @@
       "price": 695,
       "time_approx": "13h 20m",
       "title": "MDE → ORY (AndeanSky)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Osaka, Japan (KIX). 2 stops. Airline: AndeanSky. Flight to Japan Asia.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Osaka",
+      "airport_code": "KIX",
+      "airport_name": "Kansai International",
+      "country": "Japan",
+      "airline": "AndeanSky",
+      "date": "2025-11-08",
+      "price": 1350,
+      "time_approx": "24h 15m",
+      "title": "MDE → KIX (AndeanSky)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Kyoto, Japan (UKY). 2 stops. Airline: CoffeeAir. Flight to Japan Asia.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Kyoto",
+      "airport_code": "UKY",
+      "airport_name": "Kyoto Airport",
+      "country": "Japan",
+      "airline": "CoffeeAir",
+      "date": "2025-11-12",
+      "price": 1320,
+      "time_approx": "23h 45m",
+      "title": "MDE → UKY (CoffeeAir)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Sapporo, Japan (CTS). 2-3 stops. Airline: CondorJet. Flight to Japan Asia.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Sapporo",
+      "airport_code": "CTS",
+      "airport_name": "New Chitose Airport",
+      "country": "Japan",
+      "airline": "CondorJet",
+      "date": "2025-11-20",
+      "price": 1450,
+      "time_approx": "26h 10m",
+      "title": "MDE → CTS (CondorJet)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Los Angeles (LAX). 1 stop. Airline: CoffeeAir.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Los Angeles",
+      "airport_code": "LAX",
+      "airport_name": "Los Angeles International",
+      "country": "USA",
+      "airline": "CoffeeAir",
+      "date": "2025-12-15",
+      "price": 380,
+      "time_approx": "8h 15m",
+      "title": "MDE → LAX (CoffeeAir)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Los Angeles (BUR). 1 stop. Airline: CondorJet.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Los Angeles",
+      "airport_code": "BUR",
+      "airport_name": "Hollywood Burbank",
+      "country": "USA",
+      "airline": "CondorJet",
+      "date": "2025-12-15",
+      "price": 365,
+      "time_approx": "8h 30m",
+      "title": "MDE → BUR (CondorJet)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Rio de Janeiro (GIG). 1 stop. Airline: CaribeWings.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Rio de Janeiro",
+      "airport_code": "GIG",
+      "airport_name": "Galeão International",
+      "country": "Brazil",
+      "airline": "CaribeWings",
+      "date": "2025-09-25",
+      "price": 510,
+      "time_approx": "7h 50m",
+      "title": "MDE → GIG (CaribeWings)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Rio de Janeiro (SDU). 1 stop. Airline: CondorJet.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Rio de Janeiro",
+      "airport_code": "SDU",
+      "airport_name": "Santos Dumont",
+      "country": "Brazil",
+      "airline": "CondorJet",
+      "date": "2025-09-25",
+      "price": 495,
+      "time_approx": "8h 10m",
+      "title": "MDE → SDU (CondorJet)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Seoul, South Korea (ICN). 2 stops. Airline: CoffeeAir. Flight to Korea Asia.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Seoul",
+      "airport_code": "ICN",
+      "airport_name": "Incheon International",
+      "country": "South Korea",
+      "airline": "CoffeeAir",
+      "date": "2025-11-18",
+      "price": 1380,
+      "time_approx": "24h 40m",
+      "title": "MDE → ICN (CoffeeAir)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Bangkok, Thailand (BKK). 2 stops. Airline: CondorJet. Flight to Thailand Asia.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Bangkok",
+      "airport_code": "BKK",
+      "airport_name": "Suvarnabhumi",
+      "country": "Thailand",
+      "airline": "CondorJet",
+      "date": "2025-11-22",
+      "price": 1480,
+      "time_approx": "26h 30m",
+      "title": "MDE → BKK (CondorJet)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Singapore (SIN). 2 stops. Airline: CoffeeAir. Flight to Singapore Asia.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Singapore",
+      "airport_code": "SIN",
+      "airport_name": "Changi Airport",
+      "country": "Singapore",
+      "airline": "CoffeeAir",
+      "date": "2025-11-25",
+      "price": 1520,
+      "time_approx": "27h 45m",
+      "title": "MDE → SIN (CoffeeAir)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Shanghai, China (PVG). 2 stops. Airline: AndeanSky. Flight to China Asia.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Shanghai",
+      "airport_code": "PVG",
+      "airport_name": "Pudong International",
+      "country": "China",
+      "airline": "AndeanSky",
+      "date": "2025-11-28",
+      "price": 1450,
+      "time_approx": "25h 50m",
+      "title": "MDE → PVG (AndeanSky)"
+    }
+  },
+  {
+    "pageContent": "Ticket: Medellín (MDE) → Mumbai, India (BOM). 2-3 stops. Airline: CoffeeAir. Flight to India Asia.",
+    "metadata": {
+      "from_city": "Medellín",
+      "to_city": "Mumbai",
+      "airport_code": "BOM",
+      "airport_name": "Chhatrapati Shivaji Maharaj International",
+      "country": "India",
+      "airline": "CoffeeAir",
+      "date": "2025-12-05",
+      "price": 1550,
+      "time_approx": "28h 20m",
+      "title": "MDE → BOM (CoffeeAir)"
     }
   }
 ]
