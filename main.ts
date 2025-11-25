@@ -42,9 +42,9 @@ const SupportState = Annotation.Root({
   userChoice: Annotation<string>(),
 });
 
-// Node 1: Initialize - Retrieve ALL flights from Elasticsearch
-async function initialize(state: typeof SupportState.State) {
-  const results = await vectorStore.similaritySearch(state.input, 10);
+// Node 1: Retrieve flights from Elasticsearch
+async function retrieveFlights(state: typeof SupportState.State) {
+  const results = await vectorStore.similaritySearch(state.input, 10); // Retrieve top 10 similar flights
   const filteredFlights = results.map((d) => d as Document);
 
   console.log(`📋 Retrieved ${filteredFlights.length} flights from database\n`);
@@ -56,22 +56,17 @@ function showFlights(state: typeof SupportState.State) {
   const flights = state.filteredFlights || [];
 
   // Check if we've narrowed down to exactly one flight
-  if (flights.length === 1) {
-    console.log("\n✅ Found unique flight!");
-    return { filteredFlights: flights };
-  }
+  if (flights.length === 1) return { filteredFlights: flights };
 
   console.log("Available flights:\n");
   for (let i = 0; i < flights.length; i++) {
     const flight = flights[i];
     const m = flight.metadata;
-    console.log(`${i + 1}. ${m.title} - ${m.airline}`);
-    console.log(
-      `   From: ${m.from_city} → To: ${m.to_city}, ${m.country} (${m.airport_name})`
-    );
-    console.log(
-      `   Price: $${m.price} | Duration: ${m.time_approx} | Date: ${m.date}\n`
-    );
+
+    console.log(`${i + 1}. ${m.title} - ${m.airline}
+      From: ${m.from_city} → To: ${m.to_city}, ${m.country} (${m.airport_name})
+      Price: $${m.price} | Duration: ${m.time_approx} | Date: ${m.date}\n
+    `);
   }
 
   return { filteredFlights: flights };
@@ -79,9 +74,9 @@ function showFlights(state: typeof SupportState.State) {
 
 // Node 3: Request user refinement
 function requestChoice(state: typeof SupportState.State) {
-  const question =
-    "Refine your search (e.g., 'I want flights to Japan', 'Show me the cheapest', or select by number):";
+  const question = "👤 Pick one alternative:";
   const userChoice = interrupt({ question });
+
   return { userChoice };
 }
 
@@ -89,17 +84,6 @@ function requestChoice(state: typeof SupportState.State) {
 async function disambiguateSelection(state: typeof SupportState.State) {
   const flights = state.filteredFlights || [];
   const userInput = state.userChoice || "";
-
-  // Check if user selected by number
-  const numberRegex = /^\d+$/;
-  const numberMatch = numberRegex.exec(userInput);
-  if (numberMatch) {
-    const selectedIndex = Number.parseInt(userInput, 10) - 1;
-    if (selectedIndex >= 0 && selectedIndex < flights.length) {
-      console.log(`✅ Selected flight #${userInput}`);
-      return { filteredFlights: [flights[selectedIndex]] };
-    }
-  }
 
   // Use LLM to interpret natural language refinement
   const flightsList = flights
@@ -169,15 +153,15 @@ function showFinalFlight(state: typeof SupportState.State) {
   return {};
 }
 
-// Build the circular workflow graph
+// Build the workflow graph
 const workflow = new StateGraph(SupportState)
-  .addNode("initialize", initialize)
+  .addNode("retrieveFlights", retrieveFlights)
   .addNode("showFlights", showFlights)
   .addNode("requestChoice", requestChoice)
   .addNode("disambiguateSelection", disambiguateSelection)
   .addNode("showFinalFlight", showFinalFlight)
-  .addEdge("__start__", "initialize")
-  .addEdge("initialize", "showFlights")
+  .addEdge("__start__", "retrieveFlights")
+  .addEdge("retrieveFlights", "showFlights")
   .addConditionalEdges(
     "showFlights",
     (state: typeof SupportState.State) => {
@@ -237,18 +221,16 @@ async function saveGraphImage(app: any): Promise<void> {
  * Main execution function
  */
 async function main() {
-  // Ingest data
   await ingestData();
 
   // Compile workflow
   const app = workflow.compile({ checkpointer: new MemorySaver() });
   const config = { configurable: { thread_id: "hitl-circular-thread" } };
 
-  // Save graph image
   await saveGraphImage(app);
 
   // Execute workflow
-  const question = "Flights to Asia"; // User query
+  const question = "Flights to Asia"; // User request
   console.log(`🔍 SEARCHING USER QUESTION: "${question}"\n`);
 
   let currentState = await app.invoke({ input: question }, config);
@@ -256,7 +238,12 @@ async function main() {
   // Handle all interruptions in a loop
   while ((currentState as any).__interrupt__?.length > 0) {
     console.log("\n💭 APPLICATION PAUSED WAITING FOR USER INPUT...");
-    const userChoice = await getUserInput("👤 CHOICE ONE OPTION: ");
+
+    const interruptQuestion = (currentState as any).__interrupt__[0]?.value
+      ?.question;
+    const userChoice = await getUserInput(
+      interruptQuestion || "👤 YOUR CHOICE: "
+    );
 
     currentState = await app.invoke(
       new Command({ resume: userChoice }),
